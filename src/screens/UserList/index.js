@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react"
 import {
-  ActivityIndicator,
   FlatList,
   Image,
-  RefreshControl,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Modal,
+  ScrollView
 } from "react-native";
 import Block from "../../components/Block";
 import Text from "../../components/Text"
@@ -29,13 +28,13 @@ const UserList = ({ navigation, route }) => {
   const [active, setActive] = useState(activeTag)
   const [bored, setBored] = useState(boredTag)
 
-  // useEffect(()=>{
-  //   setDateFrom()
-  //   setDateTo()
-  //   setSuperActive()
-  //   setActive()
-  //   setBored()
-  // },[])
+  useEffect(() => {
+    setDateFrom(startDate)
+    setDateTo(endDate)
+    setSuperActive(superActiveTag)
+    setActive(activeTag)
+    setBored(boredTag)
+  }, [])
 
   function enumerateDaysBetweenDates(startDate, endDate) {
     let date = []
@@ -139,11 +138,19 @@ const UserList = ({ navigation, route }) => {
 
   const render_item = ({ item }) => (
     <Block style={styles.block}>
+      <Block style={{
+        position: 'absolute',
+        top: 5,
+        right: 5,
+        backgroundColor: getUserTag(item?.id) == 'Bored' ? 'Red' : colors.primary,
+        padding: 5
+      }}>
+        <Text color="white">{getUserTag(item?.id)}</Text>
+      </Block>
       <Image style={styles.img} source={{ uri: item?.profile?.pictureUrl }} />
       <Block padding={[10]}>
         <Text color={colors.inputTextColor}>{item?.profile?.name}</Text>
         <Text color={colors.inputTextColor}>{item?.id}</Text>
-        <Text color={colors.inputTextColor}>{getUserTag(item?.id)}</Text>
       </Block>
     </Block>
   );
@@ -224,6 +231,42 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  wrapper: {
+    flexGrow: 1,
+    backgroundColor: 'white'
+  },
+  decs: {
+    marginTop: 10,
+    color: colors.inputTextColor
+  },
+  inputText: {
+    color: colors.primary,
+    marginRight: 10,
+    width: 40
+  },
+  inputArea: {
+    borderWidth: 1,
+    borderColor: colors.primary,
+    width: '100%',
+    padding: 20,
+    marginTop: 40
+  },
+  title: {
+    borderBottomWidth: 1,
+    borderBottomColor: colors.inputTextColor,
+    marginBottom: 20
+  },
+  checkbox: {
+    marginRight: 10
+  },
+  paragraph: {
+    color: colors.inputTextColor
+  },
+  btn: {
+    marginTop: 20,
+    width: '50%',
+    alignSelf: 'center'
   },
 });
 
