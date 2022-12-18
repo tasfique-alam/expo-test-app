@@ -3,8 +3,8 @@ import { colors } from '../../styles/theme'
 
 const styles = StyleSheet.create({
     wrapper: {
-        backgroundColor: colors.white,
-        height: 57,
+        backgroundColor: colors.primary,
+        height: 50,
         paddingHorizontal: 20,
         paddingBottom: 4,
         elevation:4,
@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.11,
         shadowRadius: 2.22,
         position: 'relative',
+        zIndex:99
     },
 
 });

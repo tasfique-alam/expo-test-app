@@ -13,7 +13,6 @@ const styles = StyleSheet.create({
     btnText:{
         fontSize:14,
         color:colors.white,
-        fontFamily:'Gilroy-Bold',
         textTransform:'uppercase'
     },
 });
