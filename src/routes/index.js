@@ -1,8 +1,8 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import Welcome from '../screens/Welcome'
-import Dashboard from '../screens/Dashboard';
+import FilterScreen from '../screens/FilterScreen'
+import UserList from '../screens/UserList';
 
 const Stack = createNativeStackNavigator();
 
@@ -12,18 +12,18 @@ const Routes = props => {
 
     <Stack.Navigator
       headerMode={'none'}
-      initialRouteName={'dashboard'}
+      initialRouteName={'filter'}
     >
       <Stack.Screen
-        name="welcome"
-        component={Welcome}
+        name="filter"
+        component={FilterScreen}
         options={{
           headerShown: false,
         }}
       />
       <Stack.Screen
-        name="dashboard"
-        component={Dashboard}
+        name="UserList"
+        component={UserList}
         options={{
           headerShown: false,
         }}

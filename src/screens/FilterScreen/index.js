@@ -10,21 +10,14 @@ import Checkbox from 'expo-checkbox';
 import { PrimaryButton } from "../../components/Buttons";
 import { Navbar } from "../../components/Navbar";
 
-
-
-
-
-
-export default Welcome = ({ navigation }) => {
-
-  const [dateFrom, setDateFrom] = useState(new Date())
-  const [openFrom, setOpenFrom] = useState(false)
-  const [date, setDate] = useState(new Date())
-  const [open, setOpen] = useState(false)
+const FilterScreen = ({ navigation }) => {
+  const [dateFrom, setDateFrom] = useState(new Date());
+  const [openFrom, setOpenFrom] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
   const [isChecked, setChecked] = useState(false);
-  const [isChecked2, setChecked2] = useState(false);
-  const [isChecked3, setChecked3] = useState(false);
-
+  const [isCheckedSuper, setCheckedSuper] = useState(false);
+  const [isCheckedBored, setCheckedBored] = useState(false);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -36,6 +29,16 @@ export default Welcome = ({ navigation }) => {
     const currentDate = selectedDate;
     setOpen(false);
     setDate(currentDate);
+  };
+
+  const handleClickGenerate = () => {
+    navigation.navigate("UserList", {
+      startDate: dateFrom,
+      endDate: date,
+      activeTag: isChecked,
+      superActiveTag: isCheckedSuper,
+      boredTag: isCheckedBored,
+    });
   };
 
   return (
@@ -91,19 +94,19 @@ export default Welcome = ({ navigation }) => {
               <Block row center margin={[10, 0, 0]}>
                 <Checkbox
                   color={colors.primary}
-                  style={styles.checkbox} value={isChecked2}
-                  onValueChange={setChecked2} />
+                  style={styles.checkbox} value={isCheckedSuper}
+                  onValueChange={setCheckedSuper} />
                 <Text style={styles.paragraph}>Super Active</Text>
               </Block>
               <Block row center margin={[10, 0, 0]}>
                 <Checkbox
                   color={colors.primary}
-                  style={styles.checkbox} value={isChecked3}
-                  onValueChange={setChecked3} />
+                  style={styles.checkbox} value={isCheckedBored}
+                  onValueChange={setCheckedBored} />
                 <Text style={styles.paragraph}>Bored</Text>
               </Block>
             </Block>
-            <PrimaryButton btnStyles={styles.btn} btnText="Generate" />
+            <PrimaryButton btnStyles={styles.btn} btnText="Generate" onPress={handleClickGenerate}/>
           </Block>
         </Block>
       </ScrollView>
@@ -150,3 +153,5 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
 });
+
+export default FilterScreen;
