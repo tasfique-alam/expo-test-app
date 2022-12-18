@@ -10,7 +10,7 @@ export const PrimaryTextInput = ({style, ...rest }) => {
 
     <TextInput
       style={[styles.input, style]}
-      placeholderTextColor={'rgba(0,0,0,0.4)'}
+      placeholderTextColor={'black'}
       {...rest}
     />
 
