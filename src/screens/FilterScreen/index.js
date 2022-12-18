@@ -9,9 +9,13 @@ import { genericDate } from "../../helpers/common";
 import Checkbox from 'expo-checkbox';
 import { PrimaryButton } from "../../components/Buttons";
 import { Navbar } from "../../components/Navbar";
+import { data } from '../../data/TotalData'
+import moment from 'moment'
+
 
 const FilterScreen = ({ navigation }) => {
   const [dateFrom, setDateFrom] = useState(new Date());
+  const [loading, setLoading] = useState(false);
   const [openFrom, setOpenFrom] = useState(false);
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
@@ -31,15 +35,110 @@ const FilterScreen = ({ navigation }) => {
     setDate(currentDate);
   };
 
-  const handleClickGenerate = () => {
+  let filteredUsers;
+
+  function enumerateDaysBetweenDates(startDate, endDate) {
+    let date = []
+    while (moment(startDate) <= moment(endDate)) {
+      date.push(startDate);
+      startDate = moment(startDate).add(1, 'days').format("YYYY-MM-DD");
+    }
+    return date;
+  }
+
+  const filterData = () => {
+    let filteredDates = enumerateDaysBetweenDates(dateFrom, date);
+    const filteredData = [];
+
+    filteredDates?.forEach((date) => {
+      data?.forEach((item) => {
+        Object.keys(item?.calendar?.dateToDayId).forEach((key) => {
+          if (key === date) {
+            const dayId = item?.calendar?.dateToDayId[key];
+            const dayData = {
+              date,
+              dayId,
+              userId: item?.id,
+              name: item?.profile?.name,
+              pictureUrl: item?.profile?.pictureUrl,
+              meals: [],
+            };
+
+            Object.keys(item?.calendar?.mealIdToDayId).forEach((mealIdAsKey) => {
+              if (item?.calendar?.mealIdToDayId[mealIdAsKey] === dayId) {
+                dayData.meals.push(mealIdAsKey);
+              }
+            });
+
+            filteredData.push(dayData);
+          }
+        });
+      });
+    });
+
+    const availableUsers = [];
+    filteredData?.forEach((item) => {
+      if (isCheckedSuper) {
+        if (item?.meals?.length >= 10) {
+          const userIndex = availableUsers?.indexOf(item?.userId);
+          if (userIndex === -1) {
+            availableUsers.push({
+              id: item?.userId,
+              tag: "Super Active",
+            });
+            return;
+          }
+        }
+      }
+
+      if (isChecked) {
+        if (item?.meals?.length >= 5 && item?.meals?.length < 10) {
+          const userIndex = availableUsers?.indexOf(item?.userId);
+          if (userIndex === -1) {
+            availableUsers.push({
+              id: item?.userId,
+              tag: "Active",
+            });
+            return;
+          }
+        }
+      }
+
+      if (isCheckedBored) {
+        if (item?.meals?.length < 5) {
+          const userIndex = availableUsers?.indexOf(item?.userId);
+          if (userIndex === -1) {
+            availableUsers.push({
+              id: item?.userId,
+              tag: "Bored",
+            });
+          }
+        }
+      }
+    });
+    const filteredDataArray = data.filter((item) => {
+      filteredUsers = filterData();
+      const userIdIndex = filteredUsers.findIndex((u) => u?.id === item?.id);
+      setLoading(false)
+      return userIdIndex > -1;
+    });
+
+    return filteredDataArray;
+  };
+
+
+
+  const handleClickGenerate = async () => {
+     setLoading(true)
+    const data = await filterData();
     navigation.navigate("UserList", {
-      startDate: dateFrom,
-      endDate: date,
-      activeTag: isChecked,
-      superActiveTag: isCheckedSuper,
-      boredTag: isCheckedBored,
+      data: data,
+      filteredUsers: filteredUsers
     });
   };
+
+
+
 
   return (
     <>
@@ -106,7 +205,7 @@ const FilterScreen = ({ navigation }) => {
                 <Text style={styles.paragraph}>Bored</Text>
               </Block>
             </Block>
-            <PrimaryButton btnStyles={styles.btn} btnText="Generate" onPress={handleClickGenerate}/>
+            <PrimaryButton btnStyles={styles.btn} loading={loading} btnText="Generate" onPress={handleClickGenerate} />
           </Block>
         </Block>
       </ScrollView>
